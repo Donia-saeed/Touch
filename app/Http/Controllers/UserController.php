@@ -15,6 +15,12 @@ class UserController extends Controller
     {
         $this->middleware('auth');
     }
+    public function profile()
+    {
+       return view('profile.profile');
+    }
+
+
     public function index()
     {
         //

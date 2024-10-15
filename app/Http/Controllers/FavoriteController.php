@@ -18,7 +18,7 @@ class FavoriteController extends Controller
     }
     public function index()
     {
-        //
+        return view('Favorites.index');
     }
 
     /**

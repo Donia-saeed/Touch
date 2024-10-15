@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Providers\AppServiceProvider;
 
 use App\Models\Budget;
 use Illuminate\Http\Request;
+
 
 class BudgetController extends Controller
 {
@@ -18,7 +20,8 @@ class BudgetController extends Controller
     }
     public function index()
     {
-        //
+        $budgets = Budget::all();
+        return view('budgets.index', compact('budgets'));
     }
 
     /**
@@ -28,7 +31,7 @@ class BudgetController extends Controller
      */
     public function create()
     {
-        //
+        return view('budgets.create');
     }
 
     /**
@@ -39,7 +42,13 @@ class BudgetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate(request(), [
+            'name' => 'required|max:100',
+        ]);
+        $b = $request->except('_token');
+        $b['user_id'] = auth()->user()->id;
+        $budget = Budget::create($b);
+        return redirect()->route('budgets.index');
     }
 
     /**
@@ -50,7 +59,9 @@ class BudgetController extends Controller
      */
     public function show(Budget $budget)
     {
-        //
+        $operations = $budget->operations()->get();
+        return view('budgets.show', compact('budget','operations'));
+
     }
 
     /**
@@ -61,7 +72,8 @@ class BudgetController extends Controller
      */
     public function edit(Budget $budget)
     {
-        //
+        return view('budgets.update', compact('budget'));
+      ;
     }
 
     /**
@@ -73,7 +85,13 @@ class BudgetController extends Controller
      */
     public function update(Request $request, Budget $budget)
     {
-        //
+        $b = $request->validate([
+            'name' => 'required|max:100',
+        ]);
+        $b  = $request->except('_token');
+        $b ['user_id'] = auth()->user()->id;
+        $budget->update($b );
+        return redirect()->route('budgets.index');
     }
 
     /**
@@ -84,6 +102,7 @@ class BudgetController extends Controller
      */
     public function destroy(Budget $budget)
     {
-        //
+       $budget->delete();
+        return redirect()->route('budgets.index');
     }
 }

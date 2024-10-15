@@ -21,10 +21,14 @@ class OperationController extends Controller
     }
     public function index()
     {
-        $operations = Operation::all();
-        return view('operations.index', compact('operations')); // directory and transfer data
+
     }
 
+   public function specificBuget($id)
+    {
+        $operations = Operation::where('budget_id', $id)->get();// wrong is rel.
+        return view('operations.index', compact('operations')); // directory and transfer data
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -43,8 +47,7 @@ class OperationController extends Controller
      */
     public function store(Request $request)
     {
-        return redirect()->route('operations.index'); // name of route
-
+        return redirect()->route('budgets.show'); 
     }
 
     /**

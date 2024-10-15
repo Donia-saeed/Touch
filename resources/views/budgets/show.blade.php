@@ -1,4 +1,4 @@
-{{-- @extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('content')
     <div id="layoutSidenav_content">
@@ -12,12 +12,9 @@
 
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        @foreach ($operations as $operation)
-                            <li class="breadcrumb-item">
-                                {{ $operation->first()->budget->name }}
-                            </li>
-                        @endforeach
-
+                        <li class="breadcrumb-item">
+                            {{ $budget->name }}
+                        </li>
 
                     </ol>
                 </nav>
@@ -48,16 +45,15 @@
                         </div>
                     </div>
                 </div>
-                <form action="your-action-url" method="post">
-                    @csrf
+
                     <div class="row">
                         <div class="col-xl-3 col-md-4 col-sm-4">
-                            <button type="submit" class="btn btn-warning text-white mb-4 w-100 fs-5">
-                                Create New-Operation
-                            </button>
+                            <a class="btn btn-warning text-white mb-4 w-10 mt-4 fs-5"
+                            href="{{ route('operations.create') }}"> Create New-Operation</a>
+                         
                         </div>
                     </div>
-                </form>
+
 
 
                 <div class="card mb-4">
@@ -69,39 +65,47 @@
                         <table id="datatablesSimple">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                    <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>title</th>
+                                    <th>description</th>
+                                    <th>amount</th>
+                                    <th>type</th>
+                                    <th>actions</th>
+
                                 </tr>
                             </thead>
 
                             <tbody>
                                 @foreach ($operations as $operation)
                                     <tr>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
+                                        <td>{{ $operation->title }}</td>
+                                        <td>{{ $operation->description }}</td>
+                                        <td>{{ $operation->amount }}</td>
+                                        <td>{{ $operation->type }}</td>
+                                        <td>
+                                            <a href="{{ route('operations.edit', $operation->id) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form id="deleteForm" action="{{ route('operations.destroy', $operation->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="confirmDelete()">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+
+                                        </td>
                                     </tr>
                                 @endforeach
-
-
-
 
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                    <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Actions</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -112,4 +116,4 @@
     </div>
 
     </div>
-@endsection --}}
+@endsection

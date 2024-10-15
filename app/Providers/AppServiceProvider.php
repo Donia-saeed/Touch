@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Providers;
+use App\Models\Budget; 
 
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+
+
+    
     /**
      * Register any application services.
      *
@@ -23,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $budgets = Budget::all();
+        view()->share(compact('budgets'));
     }
 }
