@@ -6,7 +6,6 @@ use App\Providers\AppServiceProvider;
 use App\Models\Budget;
 use Illuminate\Http\Request;
 
-
 class BudgetController extends Controller
 {
     /**
@@ -59,9 +58,8 @@ class BudgetController extends Controller
      */
     public function show(Budget $budget)
     {
-        $operations = $budget->operations()->get();
-        return view('budgets.show', compact('budget','operations'));
-
+        $operations = $budget->operations; // Retrieve all operations for the specific budget
+        return view('budgets.show', compact('budget', 'operations'));
     }
 
     /**
@@ -73,7 +71,6 @@ class BudgetController extends Controller
     public function edit(Budget $budget)
     {
         return view('budgets.update', compact('budget'));
-      ;
     }
 
     /**
@@ -88,9 +85,9 @@ class BudgetController extends Controller
         $b = $request->validate([
             'name' => 'required|max:100',
         ]);
-        $b  = $request->except('_token');
-        $b ['user_id'] = auth()->user()->id;
-        $budget->update($b );
+        $b = $request->except('_token');
+        $b['user_id'] = auth()->user()->id;
+        $budget->update($b);
         return redirect()->route('budgets.index');
     }
 
@@ -102,7 +99,12 @@ class BudgetController extends Controller
      */
     public function destroy(Budget $budget)
     {
-       $budget->delete();
+        dd($budget, $budget->id);
+        foreach($budget->operations as $operation) {
+            $operation->delete();
+        }
+        $budget->delete();
         return redirect()->route('budgets.index');
+
     }
 }

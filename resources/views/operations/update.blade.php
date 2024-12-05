@@ -11,8 +11,9 @@
                                 <h3 class="card-title">Create New Operation</h3>
                             </div>
 
-                            <form method="POST" action="{{ route('operations.store') }}" novalidate>
+                            <form method="POST" action="{{ route('operations.update', ['budget' => $budget->id, 'operation' => $operation->id]) }}" novalidate>
                                 @csrf
+                                @method('PUT')
                                 <div class="card-body">
                                     <!-- Title Input Field -->
                                     <div class="form-group mb-3">
@@ -23,7 +24,7 @@
                                             id="title"
                                             name="title"
                                             placeholder="Enter title for your operation"
-                                            value="{{ old('title') }}"
+                                           value="{{ old('title', $operation->title) }}"
                                             required
                                         >
                                         @error('title')
@@ -39,7 +40,7 @@
                                             id="description"
                                             name="description"
                                             rows="3"
-                                            placeholder="Enter description for your operation">{{ old('description') }}</textarea>
+                                            placeholder="Enter description for your operation">{{ old('description', $operation->description) }}</textarea>
                                         @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -55,7 +56,7 @@
                                                 id="amount"
                                                 name="amount"
                                                 placeholder="Enter amount for your operation"
-                                                value="{{ old('amount') }}"
+                                                value="{{ old('amount', $operation->amount) }}"
                                                 required
                                             >
                                             @error('amount')
@@ -75,7 +76,7 @@
                                                     name="type"
                                                     id="type_expenses"
                                                     value="0"
-                                                    {{ old('type') == '0' ? 'checked' : '' }}
+                                                    {{ old('type', $operation->type) == '0' ? 'checked' : '' }}
                                                     required
                                                 >
                                                 <label class="form-check-label" for="type_expenses">
@@ -89,7 +90,7 @@
                                                     name="type"
                                                     id="type_income"
                                                     value="1"
-                                                    {{ old('type') == '1' ? 'checked' : '' }}
+                                                    {{ old('type', $operation->type) == '1' ? 'checked' : '' }}
                                                     required
                                                 >
                                                 <label class="form-check-label" for="type_income">

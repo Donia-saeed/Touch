@@ -49,8 +49,8 @@
                     <div class="row">
                         <div class="col-xl-3 col-md-4 col-sm-4">
                             <a class="btn btn-warning text-white mb-4 w-10 mt-4 fs-5"
-                            href="{{ route('operations.create') }}"> Create New-Operation</a>
-                         
+                            href="{{ route('operations.create' , $budget->id) }}"> Create New-Operation</a>
+
                         </div>
                     </div>
 
@@ -82,10 +82,10 @@
                                         <td>{{ $operation->amount }}</td>
                                         <td>{{ $operation->type }}</td>
                                         <td>
-                                            <a href="{{ route('operations.edit', $operation->id) }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('operations.edit', ['budget' => $budget->id, 'operation' => $operation->id]) }}" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form id="deleteForm" action="{{ route('operations.destroy', $operation->id) }}" method="POST" style="display:inline;">
+                                            <form id="deleteForm" action="{{ route('operations.destroy', ['budget' => $budget->id, 'operation' => $operation->id]) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="btn btn-danger btn-sm"

@@ -11,11 +11,11 @@
                                 <h3 class="card-title">Create New Operation</h3>
                             </div>
 
-                            <form method="POST" action="{{ route('operations.store') }}" novalidate>
+                            <form method="POST" action="{{ route('operations.store',$budget->id) }}" novalidate>
                                 @csrf
                                 <div class="card-body">
-                                    <!-- Title Input Field -->
                                     <div class="form-group mb-3">
+
                                         <label for="title">Title <span class="text-danger">*</span></label>
                                         <input
                                             type="text"
@@ -31,7 +31,6 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Description Input Field -->
                                     <div class="form-group mb-3">
                                         <label for="description">Description</label>
                                         <textarea
@@ -45,7 +44,7 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Amount Input Field -->
+
                                     <div class="form-group mb-3">
                                         <label for="amount">Amount <span class="text-danger">*</span></label>
                                         <div class="input-group w-50">

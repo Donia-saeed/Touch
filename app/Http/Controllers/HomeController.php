@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('operations.index');
+        return view('budgets.index');
     }
 
 

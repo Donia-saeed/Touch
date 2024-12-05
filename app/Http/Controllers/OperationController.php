@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Operation;
+use App\Models\Budget;
 use Illuminate\Http\Request;
 
 class OperationController extends Controller
@@ -13,30 +14,24 @@ class OperationController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
-
     public function __construct()
     {
         $this->middleware('auth');
     }
     public function index()
     {
-
     }
 
-   public function specificBuget($id)
-    {
-        $operations = Operation::where('budget_id', $id)->get();// wrong is rel.
-        return view('operations.index', compact('operations')); // directory and transfer data
-    }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($budgetid)
     {
-        return view('operations.create'); // directory
+        // Find the budget by id and pass it to the view for creating a new operation
+        $budget = Budget::find($budgetid);
+        return view('operations.create', compact('budget'));
     }
 
     /**
@@ -45,9 +40,23 @@ class OperationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+    public function store(Request $request, $budgetid)
     {
-        return redirect()->route('budgets.show'); 
+        $this->validate($request, [
+            'title' => 'required|max:100',
+            'description' => 'required|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            // 'budget_id' => 'required|exists:budgets,id' // Validate the budget_id(input)
+        ]);
+
+        $op = $request->except('_token');
+        $op['user_id'] = auth()->user()->id;
+        $op['budget_id'] = $budgetid;
+
+        $operation = Operation::create($op);
+
+        return redirect()->route('budgets.show', $operation->budget_id);
     }
 
     /**
@@ -67,10 +76,13 @@ class OperationController extends Controller
      * @param  \App\Models\Operation  $operation
      * @return \Illuminate\Http\Response
      */
-    public function edit(Operation $operation)
-    {
 
-        return view('operations.update'); // directory
+    public function edit($budgetId, $operationId)
+    {
+        $budget = Budget::findOrFail($budgetId);
+        $operation = Operation::findOrFail($operationId);
+
+        return view('operations.update', compact('budget', 'operation'));
     }
 
     /**
@@ -80,10 +92,25 @@ class OperationController extends Controller
      * @param  \App\Models\Operation  $operation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Operation $operation)
+   
+    public function update(Request $request, Budget $budget, Operation $operation)
     {
-        return redirect()->route('operations.index'); // name of route
+        // Validate the request data
+        $newOp = $request->validate([
+            'title' => 'required|max:100',
+            'description' => 'required|max:255',
+            'amount' => 'required|numeric|min:0.01',
+        ]);
 
+        // Set the budget_id and user_id in the validated data
+        $newOp['budget_id'] = $budget->id;
+        $newOp['user_id'] = auth()->user()->id;
+
+        // Update the operation with the new data
+        $operation->update($newOp);
+
+        // Redirect back to the budget show page
+        return redirect()->route('budgets.show', $budget->id)->with('success', 'Operation updated successfully');
     }
 
     /**
@@ -92,9 +119,11 @@ class OperationController extends Controller
      * @param  \App\Models\Operation  $operation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Operation $operation)
+    public function destroy($budgetId, $operationId)
     {
-        return redirect()->route('operations.index'); // name of route
+        $operation = Operation::findOrFail($operationId);
+        $operation->delete();
 
+        return redirect()->route('budgets.show', $budgetId);
     }
 }
